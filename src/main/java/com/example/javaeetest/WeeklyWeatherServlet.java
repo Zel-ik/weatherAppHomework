@@ -21,11 +21,13 @@ public class WeeklyWeatherServlet extends HttpServlet {
 
         ArrayList<Forecast> forecasts = new WeatherAPI().getWeeklyForecast(path, cityName);
         PrintWriter pw = response.getWriter();
-        for(int i = 0; i < forecasts.size(); i++) {
-            pw.println(String.format("Date is %s. In %s we have %f°C (%s)", forecasts.get(i).getData(),
-                    forecasts.get(i).getCity(), forecasts.get(i).getTempC(), forecasts.get(i).getWeather()));
+
+        for (Forecast forecast : forecasts) {
+            pw.println(String.format("Date is %s. In %s we have %f°C (%s)", forecast.getData(),
+                    forecast.getCity(), forecast.getTempC(), forecast.getWeather()));
             pw.println();
         }
+
         pw.flush();
         pw.close();
     }

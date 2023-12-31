@@ -14,8 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class WeatherAPI {
-    HttpGet get;
-    Gson gson = new Gson();
+    private HttpGet get;
+    private final Gson gson = new Gson();
 
     public ArrayList<Forecast> getWeeklyForecast(String path, String cityName){
         get = new HttpGet(path);
@@ -26,9 +26,7 @@ public class WeatherAPI {
             String weatherData = closeableHttpClient.execute(get, classicHttpResponse ->
                     IOUtils.toString(classicHttpResponse.getEntity().getContent(), StandardCharsets.UTF_8));
 
-            // создаем джейсон объект в который записываем полученные ранее данные
-            // из него достаем объект хранящий данные о текущей погоде
-            // достаем данные о градусах цельсия и записываем в Double
+            // проходимся по полученным Json данным, и записываем их в лист объектов Forecast
             JsonObject jObject = gson.fromJson(weatherData, JsonObject.class);
 
             JsonObject jsonForecast = jObject.get("forecast").getAsJsonObject();
@@ -45,7 +43,7 @@ public class WeatherAPI {
             }
             return forecasts;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("IOException in getWeeklyForecast method: " + e.getMessage());
         }
     }
 
@@ -73,7 +71,7 @@ public class WeatherAPI {
 
             return new Forecast(cityName, localTime,tempC,weather);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("IOException in getTodayWeather method: " + e.getMessage());
         }
     }
 }
